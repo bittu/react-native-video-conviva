@@ -55,6 +55,10 @@ export type VideoSaveData = {
 };
 
 export interface VideoRef {
+  convivaInit: (id: string, gatewayUrl: string) => void;
+  reportPlaybackRequested: (assetId: string, assetName: string, isLive: boolean) => void;
+  setPlaybackData: (accountType: string, accountId: string, streamUrl: string) => void;
+  reportError: (message: string, correlationId: string) => void;
   seek: (time: number, tolerance?: number) => void;
   resume: () => void;
   pause: () => void;
@@ -231,6 +235,79 @@ const Video = forwardRef<VideoRef, ReactVideoProps>(
       };
     }, [selectedVideoTrack]);
 
+    const convivaInit = useCallback((id: string, gatewayUrl: string) => {
+      if (!nativeRef.current) {
+        console.warn('Video Component is not mounted');
+        return;
+      }
+
+      const convivaInitFunction = () => {
+        VideoManager.convivaInit(id, gatewayUrl, getReactTag(nativeRef));
+      };
+      Platform.select({
+        ios: convivaInitFunction,
+        android: convivaInitFunction,
+        default: () => {
+          // TODO: Implement VideoManager.convivaInitFunction for windows
+          // nativeRef.current?.setNativeProps({seek: time});
+        },
+      })();
+    }, []);
+
+    const reportPlaybackRequested = useCallback((assetId: string, assetName: string, isLive: boolean) => {
+      if (!nativeRef.current) {
+        console.warn('Video Component is not mounted');
+        return;
+      }
+      const reportPlaybackRequestedFunction = () => {
+        VideoManager.reportPlaybackRequested(assetId, assetName, isLive, getReactTag(nativeRef));
+      };
+      Platform.select({
+        ios: reportPlaybackRequestedFunction,
+        android: reportPlaybackRequestedFunction,
+        default: () => {
+          // TODO: Implement VideoManager.reportPlaybackRequestedFunction for windows
+          // nativeRef.current?.setNativeProps({seek: time});
+        },
+      })();
+    }, []);
+
+    const setPlaybackData = useCallback((accountType: string, accountId: string, streamUrl: string) => {
+      if (!nativeRef.current) {
+        console.warn('Video Component is not mounted');
+        return;
+      }
+      const setPlaybackDataFunction = () => {
+        VideoManager.setPlaybackData(accountType, accountId, streamUrl, getReactTag(nativeRef));
+      };
+      Platform.select({
+        ios: setPlaybackDataFunction,
+        android: setPlaybackDataFunction,
+        default: () => {
+          // TODO: Implement VideoManager.reportPlaybackRequestedFunction for windows
+          // nativeRef.current?.setNativeProps({seek: time});
+        },
+      })();
+    }, []);
+
+    const reportError = useCallback((message: string, correlationId: string) => {
+      if (!nativeRef.current) {
+        console.warn('Video Component is not mounted');
+        return;
+      }
+      const reportErrorFunction = () => {
+        VideoManager.reportError(message, correlationId, getReactTag(nativeRef));
+      };
+      Platform.select({
+        ios: reportErrorFunction,
+        android: reportErrorFunction,
+        default: () => {
+          // TODO: Implement VideoManager.reportPlaybackRequestedFunction for windows
+          // nativeRef.current?.setNativeProps({seek: time});
+        },
+      })();
+    }, []);
+  
     const seek = useCallback(async (time: number, tolerance?: number) => {
       if (isNaN(time)) {
         throw new Error('Specified time is not a number');

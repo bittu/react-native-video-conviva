@@ -10,6 +10,7 @@ import com.facebook.react.bridge.UiThreadUtil
 import com.facebook.react.uimanager.UIManagerHelper
 import com.facebook.react.uimanager.common.UIManagerType
 import kotlin.math.roundToInt
+import android.util.Log
 
 class VideoManagerModule(reactContext: ReactApplicationContext?) : ReactContextBaseJavaModule(reactContext) {
     override fun getName(): String {
@@ -38,7 +39,28 @@ class VideoManagerModule(reactContext: ReactApplicationContext?) : ReactContextB
     }
 
     @ReactMethod
+    fun initConviva(id: String, gatewayUrl: String?, reactTag: Int) {
+        Log.d("DAZ", "Call to initConviva with $id, $gatewayUrl")
+    }
+
+    @ReactMethod
+    fun reportPlaybackRequested(assetId: String, assetName: String, isLive: Boolean, reactTag: Int) {
+        Log.d("DAZ", "Call to reportPlaybackRequested with $assetId, $assetName, $isLive")
+    }
+
+    @ReactMethod
+    fun setPlaybackData(accountType: String, accountId: String, streamUrl: String?, reactTag: Int) {
+        Log.d("DAZ", "Call to setPlaybackData with $accountType, $accountId, $streamUrl")
+    }
+
+    @ReactMethod
+    fun reportError(message: String, correlationId: String?, reactTag: Int) {
+        Log.d("DAZ", "Call to reportError with $message, $correlationId")
+    }
+
+    @ReactMethod
     fun setPlayerPauseState(paused: Boolean?, reactTag: Int) {
+        Log.d("DAZ", "Call to setPlayerPauseState with $paused")
         performOnPlayerView(reactTag) {
             it?.setPausedModifier(paused!!)
         }
