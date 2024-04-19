@@ -352,6 +352,10 @@ export type VideoSaveData = {
 };
 
 export interface VideoManagerType {
+  convivaInit: (id: string, gatewayUrl: string) => => Promise<VideoSaveData>;
+  reportPlaybackRequested: (assetId: string, assetName: string, isLive: boolean) => => Promise<VideoSaveData>;
+  setPlaybackData: (accountType: string, accountId: string, streamUrl: string) => => Promise<VideoSaveData>;
+  reportError: (message: string, correlationId: string) => => Promise<VideoSaveData>;
   save: (option: object, reactTag: number) => Promise<VideoSaveData>;
   seek: (option: Seek, reactTag: number) => Promise<void>;
   setPlayerPauseState: (paused: boolean, reactTag: number) => Promise<void>;

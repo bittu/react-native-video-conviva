@@ -266,7 +266,7 @@ const Video = forwardRef<VideoRef, ReactVideoProps>(
         ios: reportPlaybackRequestedFunction,
         android: reportPlaybackRequestedFunction,
         default: () => {
-          // TODO: Implement VideoManager.reportPlaybackRequestedFunction for windows
+          // TODO: Implement VideoManager.reportPlaybackRequested for windows
           // nativeRef.current?.setNativeProps({seek: time});
         },
       })();
@@ -284,7 +284,7 @@ const Video = forwardRef<VideoRef, ReactVideoProps>(
         ios: setPlaybackDataFunction,
         android: setPlaybackDataFunction,
         default: () => {
-          // TODO: Implement VideoManager.reportPlaybackRequestedFunction for windows
+          // TODO: Implement VideoManager.setPlaybackData for windows
           // nativeRef.current?.setNativeProps({seek: time});
         },
       })();
@@ -302,7 +302,7 @@ const Video = forwardRef<VideoRef, ReactVideoProps>(
         ios: reportErrorFunction,
         android: reportErrorFunction,
         default: () => {
-          // TODO: Implement VideoManager.reportPlaybackRequestedFunction for windows
+          // TODO: Implement VideoManager.reportError for windows
           // nativeRef.current?.setNativeProps({seek: time});
         },
       })();
@@ -579,7 +579,11 @@ const Video = forwardRef<VideoRef, ReactVideoProps>(
     useImperativeHandle(
       ref,
       () => ({
-        seek,
+        convivaInit,
+		reportPlaybackRequested,
+		setPlaybackData,
+		reportError,
+		seek,
         presentFullscreenPlayer,
         dismissFullscreenPlayer,
         save,
@@ -588,7 +592,11 @@ const Video = forwardRef<VideoRef, ReactVideoProps>(
         restoreUserInterfaceForPictureInPictureStopCompleted,
       }),
       [
-        seek,
+        convivaInit,
+		reportPlaybackRequested,
+		setPlaybackData,
+		reportError,
+		seek,
         presentFullscreenPlayer,
         dismissFullscreenPlayer,
         save,
