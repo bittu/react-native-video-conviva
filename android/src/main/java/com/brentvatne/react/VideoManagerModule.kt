@@ -39,8 +39,8 @@ class VideoManagerModule(reactContext: ReactApplicationContext?) : ReactContextB
     }
 
     @ReactMethod
-    fun initConviva(id: String, gatewayUrl: String?, reactTag: Int) {
-        Log.d("DAZ", "Call to initConviva with $id, $gatewayUrl")
+    fun convivaInit(id: String, gatewayUrl: String?, reactTag: Int) {
+        Log.d("DAZ", "Call to convivaInit with $id, $gatewayUrl")
     }
 
     @ReactMethod
