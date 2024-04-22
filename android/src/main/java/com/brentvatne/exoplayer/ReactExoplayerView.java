@@ -247,12 +247,12 @@ public class ReactExoplayerView extends FrameLayout implements
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case SHOW_PROGRESS:
-                    if (player != null) {
-                        if (playerControlView != null && isPlayingAd() && controls) {
-                            playerControlView.hide();
-                        }
-                        long pos = player.getCurrentPosition();
+            case SHOW_PROGRESS:
+                if (player != null) {
+                    if (playerControlView != null && isPlayingAd() && controls) {
+                        playerControlView.hide();
+                    }
+                    long pos = player.getCurrentPosition();
                         long bufferedDuration = player.getBufferedPercentage() * player.getDuration() / 100;
                         long duration = player.getDuration();
 
@@ -263,11 +263,11 @@ public class ReactExoplayerView extends FrameLayout implements
                             lastBufferDuration = bufferedDuration;
                             lastDuration = duration;
                             eventEmitter.progressChanged(pos, bufferedDuration, player.getDuration(), getPositionInFirstPeriodMsForCurrentWindow(pos));
-                        }
-                        msg = obtainMessage(SHOW_PROGRESS);
-                        sendMessageDelayed(msg, Math.round(mProgressUpdateInterval));
                     }
-                    break;
+                    msg = obtainMessage(SHOW_PROGRESS);
+                    sendMessageDelayed(msg, Math.round(mProgressUpdateInterval));
+                }
+                break;
             }
         }
     };
@@ -650,6 +650,10 @@ public class ReactExoplayerView extends FrameLayout implements
         PlaybackParameters params = new PlaybackParameters(rate, 1f);
         player.setPlaybackParameters(params);
         changeAudioOutput(this.audioOutput);
+
+        if (playerCreatedCallback != null) {
+            playerCreatedCallback.onPlayerCreated(player);
+        }
     }
 
     private DrmSessionManager initializePlayerDrm(ReactExoplayerView self) {
@@ -2126,5 +2130,15 @@ public class ReactExoplayerView extends FrameLayout implements
     public void onAdError(AdErrorEvent adErrorEvent) {
         AdError error = adErrorEvent.getError();
         eventEmitter.receiveAdErrorEvent(error.getMessage(), String.valueOf(error.getErrorCode()), String.valueOf(error.getErrorType()));
+    }
+
+    private PlayerCreatedCallback playerCreatedCallback;
+
+    public void setPlayerCreatedCallback(PlayerCreatedCallback playerCreatedCallback) {
+        this.playerCreatedCallback = playerCreatedCallback;
+    }
+
+    public interface PlayerCreatedCallback {
+        void onPlayerCreated(ExoPlayer player);
     }
 }

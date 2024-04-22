@@ -55,10 +55,10 @@ export type VideoSaveData = {
 };
 
 export interface VideoRef {
-  convivaInit: (id: string, gatewayUrl: string) => void;
-  reportPlaybackRequested: (assetId: string, assetName: string, isLive: boolean) => void;
-  setPlaybackData: (accountType: string, accountId: string, streamUrl: string) => void;
-  reportError: (message: string, correlationId: string) => void;
+  convivaInit: (customerKey: string, gatewayUrl: string, playerName: string, tags: object, enableDebug: boolean) => void;
+  reportPlaybackRequested: (assetName: string, isLive: boolean, tags: object) => void;
+  setPlaybackData: (streamUrl: string, viewerId: string, tags: object) => void;
+  reportError: (message: string, tags: object) => void;
   seek: (time: number, tolerance?: number) => void;
   resume: () => void;
   pause: () => void;
@@ -235,14 +235,14 @@ const Video = forwardRef<VideoRef, ReactVideoProps>(
       };
     }, [selectedVideoTrack]);
 
-    const convivaInit = useCallback((id: string, gatewayUrl: string) => {
+    const convivaInit = useCallback((customerKey: string, gatewayUrl: string, playerName: string, tags: object, enableDebug: boolean) => {
       if (!nativeRef.current) {
         console.warn('Video Component is not mounted');
         return;
       }
 
       const convivaInitFunction = () => {
-        VideoManager.convivaInit(id, gatewayUrl, getReactTag(nativeRef));
+        VideoManager.convivaInit(customerKey, gatewayUrl, playerName, tags, enableDebug, getReactTag(nativeRef));
       };
       Platform.select({
         ios: convivaInitFunction,
@@ -254,13 +254,13 @@ const Video = forwardRef<VideoRef, ReactVideoProps>(
       })();
     }, []);
 
-    const reportPlaybackRequested = useCallback((assetId: string, assetName: string, isLive: boolean) => {
+    const reportPlaybackRequested = useCallback((assetName: string, isLive: boolean, tags: object) => {
       if (!nativeRef.current) {
         console.warn('Video Component is not mounted');
         return;
       }
       const reportPlaybackRequestedFunction = () => {
-        VideoManager.reportPlaybackRequested(assetId, assetName, isLive, getReactTag(nativeRef));
+        VideoManager.reportPlaybackRequested(assetName, isLive, tags, getReactTag(nativeRef));
       };
       Platform.select({
         ios: reportPlaybackRequestedFunction,
@@ -272,13 +272,13 @@ const Video = forwardRef<VideoRef, ReactVideoProps>(
       })();
     }, []);
 
-    const setPlaybackData = useCallback((accountType: string, accountId: string, streamUrl: string) => {
+    const setPlaybackData = useCallback((streamUrl: string, viewerId: string, tags: object) => {
       if (!nativeRef.current) {
         console.warn('Video Component is not mounted');
         return;
       }
       const setPlaybackDataFunction = () => {
-        VideoManager.setPlaybackData(accountType, accountId, streamUrl, getReactTag(nativeRef));
+        VideoManager.setPlaybackData(streamUrl, viewerId, tags, getReactTag(nativeRef));
       };
       Platform.select({
         ios: setPlaybackDataFunction,
@@ -290,13 +290,13 @@ const Video = forwardRef<VideoRef, ReactVideoProps>(
       })();
     }, []);
 
-    const reportError = useCallback((message: string, correlationId: string) => {
+    const reportError = useCallback((message: string, tags: object) => {
       if (!nativeRef.current) {
         console.warn('Video Component is not mounted');
         return;
       }
       const reportErrorFunction = () => {
-        VideoManager.reportError(message, correlationId, getReactTag(nativeRef));
+        VideoManager.reportError(message, tags, getReactTag(nativeRef));
       };
       Platform.select({
         ios: reportErrorFunction,
@@ -580,10 +580,10 @@ const Video = forwardRef<VideoRef, ReactVideoProps>(
       ref,
       () => ({
         convivaInit,
-		reportPlaybackRequested,
-		setPlaybackData,
-		reportError,
-		seek,
+        reportPlaybackRequested,
+        setPlaybackData,
+        reportError,
+	    	seek,
         presentFullscreenPlayer,
         dismissFullscreenPlayer,
         save,
@@ -593,10 +593,10 @@ const Video = forwardRef<VideoRef, ReactVideoProps>(
       }),
       [
         convivaInit,
-		reportPlaybackRequested,
-		setPlaybackData,
-		reportError,
-		seek,
+        reportPlaybackRequested,
+        setPlaybackData,
+        reportError,
+        seek,
         presentFullscreenPlayer,
         dismissFullscreenPlayer,
         save,

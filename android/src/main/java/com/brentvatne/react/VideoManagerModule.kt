@@ -1,6 +1,7 @@
 package com.brentvatne.react
 
 import com.brentvatne.common.toolbox.ReactBridgeUtils
+import com.brentvatne.exoplayer.ConvivaManager
 import com.brentvatne.exoplayer.ReactExoplayerView
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
@@ -10,9 +11,10 @@ import com.facebook.react.bridge.UiThreadUtil
 import com.facebook.react.uimanager.UIManagerHelper
 import com.facebook.react.uimanager.common.UIManagerType
 import kotlin.math.roundToInt
-import android.util.Log
 
 class VideoManagerModule(reactContext: ReactApplicationContext?) : ReactContextBaseJavaModule(reactContext) {
+    private var convivaManager: ConvivaManager? = null
+
     override fun getName(): String {
         return REACT_CLASS
     }
@@ -39,28 +41,34 @@ class VideoManagerModule(reactContext: ReactApplicationContext?) : ReactContextB
     }
 
     @ReactMethod
-    fun convivaInit(id: String, gatewayUrl: String?, reactTag: Int) {
-        Log.d("DAZ", "Call to convivaInit with $id, $gatewayUrl")
+    fun convivaInit(customerKey: String, gatewayUrl: String?, playerName: String, tags: ReadableMap, enableDebug: Boolean, reactTag: Int) {
+        performOnPlayerView(reactTag) { exoplayerView ->
+            exoplayerView?.let {
+                convivaManager = ConvivaManager(exoplayerView.context, customerKey, gatewayUrl, playerName, tags.toHashMap(), enableDebug)
+                exoplayerView.setPlayerCreatedCallback { exoPlayer ->
+                    convivaManager?.setPlayer(exoPlayer)
+                }
+            }
+        }
     }
 
     @ReactMethod
-    fun reportPlaybackRequested(assetId: String, assetName: String, isLive: Boolean, reactTag: Int) {
-        Log.d("DAZ", "Call to reportPlaybackRequested with $assetId, $assetName, $isLive")
+    fun reportPlaybackRequested(assetName: String, isLive: Boolean, tags: ReadableMap, reactTag: Int) {
+        convivaManager?.reportPlaybackRequested(assetName, isLive, tags.toHashMap())
     }
 
     @ReactMethod
-    fun setPlaybackData(accountType: String, accountId: String, streamUrl: String?, reactTag: Int) {
-        Log.d("DAZ", "Call to setPlaybackData with $accountType, $accountId, $streamUrl")
+    fun setPlaybackData(streamUrl: String?, viewerId: String, tags: ReadableMap, reactTag: Int) {
+        convivaManager?.setPlaybackData(streamUrl, viewerId, tags.toHashMap())
     }
 
     @ReactMethod
-    fun reportError(message: String, correlationId: String?, reactTag: Int) {
-        Log.d("DAZ", "Call to reportError with $message, $correlationId")
+    fun reportError(message: String, tags: ReadableMap, reactTag: Int) {
+        convivaManager?.reportError(message, tags.toHashMap())
     }
 
     @ReactMethod
     fun setPlayerPauseState(paused: Boolean?, reactTag: Int) {
-        Log.d("DAZ", "Call to setPlayerPauseState with $paused")
         performOnPlayerView(reactTag) {
             it?.setPausedModifier(paused!!)
         }

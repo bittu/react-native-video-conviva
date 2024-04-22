@@ -180,6 +180,8 @@ def media3_version = safeExtGet('media3Version')
 def kotlin_version = safeExtGet('kotlinVersion')
 def androidxCore_version = safeExtGet('androidxCoreVersion')
 def androidxActivity_version = safeExtGet('androidxActivityVersion')
+def conviva_core_sdk_version = safeExtGet('convivaCoreSdkVersion')
+def conviva_exoplayer_sdk_version = safeExtGet('convivaExoplayerSdkVersion')
 
 dependencies {
     // For < 0.71, this will be from the local maven repo
@@ -212,7 +214,7 @@ dependencies {
     if (ExoplayerDependencies["useExoplayerRtsp"]) {
         implementation "androidx.media3:media3-exoplayer-rtsp:$media3_version"
     }
-    
+
     // For ad insertion using the Interactive Media Ads SDK with ExoPlayer
     if (ExoplayerDependencies["useExoplayerIMA"]) {
         implementation "androidx.media3:media3-exoplayer-ima:$media3_version"
@@ -233,4 +235,7 @@ dependencies {
     implementation "androidx.media3:media3-common:$media3_version"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    implementation "com.conviva.sdk:conviva-core-sdk:$conviva_core_sdk_version"
+    implementation "com.conviva.sdk:conviva-exoplayer-sdk:$conviva_exoplayer_sdk_version"
 }
