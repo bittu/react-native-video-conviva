@@ -58,7 +58,9 @@ export interface VideoRef {
   convivaInit: (customerKey: string, gatewayUrl: string, playerName: string, tags: object, enableDebug: boolean) => void;
   reportPlaybackRequested: (assetName: string, isLive: boolean, tags: object) => void;
   setPlaybackData: (streamUrl: string, viewerId: string, tags: object) => void;
+  reportWarning: (message: string) => void;
   reportError: (message: string, tags: object) => void;
+  reportPlaybackEnded: () => void;
   seek: (time: number, tolerance?: number) => void;
   resume: () => void;
   pause: () => void;
@@ -289,6 +291,24 @@ const Video = forwardRef<VideoRef, ReactVideoProps>(
         },
       })();
     }, []);
+	
+	const reportWarning = useCallback((message: string) => {
+      if (!nativeRef.current) {
+        console.warn('Video Component is not mounted');
+        return;
+      }
+      const reportWarningFunction = () => {
+        VideoManager.reportWarning(message, getReactTag(nativeRef));
+      };
+      Platform.select({
+        ios: reportWarningFunction,
+        android: reportWarningFunction,
+        default: () => {
+          // TODO: Implement VideoManager.reportWarning for windows
+          // nativeRef.current?.setNativeProps({seek: time});
+        },
+      })();
+    }, []);
 
     const reportError = useCallback((message: string, tags: object) => {
       if (!nativeRef.current) {
@@ -301,6 +321,24 @@ const Video = forwardRef<VideoRef, ReactVideoProps>(
       Platform.select({
         ios: reportErrorFunction,
         android: reportErrorFunction,
+        default: () => {
+          // TODO: Implement VideoManager.reportError for windows
+          // nativeRef.current?.setNativeProps({seek: time});
+        },
+      })();
+    }, []);
+	
+	const reportPlaybackEnded = useCallback(() => {
+      if (!nativeRef.current) {
+        console.warn('Video Component is not mounted');
+        return;
+      }
+      const reportPlaybackEndedFunction = () => {
+        VideoManager.reportPlaybackEnded(getReactTag(nativeRef));
+      };
+      Platform.select({
+        ios: reportPlaybackEndedFunction,
+        android: reportPlaybackEndedFunction,
         default: () => {
           // TODO: Implement VideoManager.reportError for windows
           // nativeRef.current?.setNativeProps({seek: time});

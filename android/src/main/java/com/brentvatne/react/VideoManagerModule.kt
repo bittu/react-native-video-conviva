@@ -78,12 +78,34 @@ class VideoManagerModule(reactContext: ReactApplicationContext?) : ReactContextB
     }
 
     @ReactMethod
+    fun reportWarning(message: String, reactTag: Int) {
+        // Forcing onto UI thread to prevent race condition with init
+        UiThreadUtil.runOnUiThread {
+            convivaManager?.reportWarning(message)
+                ?: run {
+                    Log.e(REACT_CLASS, "Missing convivaManager for reportError")
+                }
+        }
+    }
+
+    @ReactMethod
     fun reportError(message: String, tags: ReadableMap, reactTag: Int) {
         // Forcing onto UI thread to prevent race condition with init
         UiThreadUtil.runOnUiThread {
             convivaManager?.reportError(message, tags.toHashMap())
                 ?: run {
                     Log.e(REACT_CLASS, "Missing convivaManager for reportError")
+                }
+        }
+    }
+
+    @ReactMethod
+    fun reportPlaybackEnded(reactTag: Int) {
+        // Forcing onto UI thread to prevent race condition with init
+        UiThreadUtil.runOnUiThread {
+            convivaManager?.reportPlaybackEnded()
+                ?: run {
+                    Log.e(REACT_CLASS, "Missing convivaManager for reportPlaybackEnded")
                 }
         }
     }
