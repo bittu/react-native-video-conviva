@@ -1,5 +1,6 @@
 package com.brentvatne.react
 
+import android.util.Log
 import com.brentvatne.common.toolbox.ReactBridgeUtils
 import com.brentvatne.exoplayer.ConvivaManager
 import com.brentvatne.exoplayer.ReactExoplayerView
@@ -48,23 +49,43 @@ class VideoManagerModule(reactContext: ReactApplicationContext?) : ReactContextB
                 exoplayerView.setPlayerCreatedCallback { exoPlayer ->
                     convivaManager?.setPlayer(exoPlayer)
                 }
+            } ?: run {
+                Log.e(REACT_CLASS, "Missing view for convivaInit")
             }
         }
     }
 
     @ReactMethod
     fun reportPlaybackRequested(assetName: String, isLive: Boolean, tags: ReadableMap, reactTag: Int) {
-        convivaManager?.reportPlaybackRequested(assetName, isLive, tags.toHashMap())
+        // Forcing onto UI thread to prevent race condition with init
+        UiThreadUtil.runOnUiThread {
+            convivaManager?.reportPlaybackRequested(assetName, isLive, tags.toHashMap())
+                ?: run {
+                    Log.e(REACT_CLASS, "Missing convivaManager for reportPlaybackRequested")
+                }
+        }
     }
 
     @ReactMethod
     fun setPlaybackData(streamUrl: String?, viewerId: String, tags: ReadableMap, reactTag: Int) {
-        convivaManager?.setPlaybackData(streamUrl, viewerId, tags.toHashMap())
+        // Forcing onto UI thread to prevent race condition with init
+        UiThreadUtil.runOnUiThread {
+            convivaManager?.setPlaybackData(streamUrl, viewerId, tags.toHashMap())
+                ?: run {
+                    Log.e(REACT_CLASS, "Missing convivaManager for setPlaybackData")
+                }
+        }
     }
 
     @ReactMethod
     fun reportError(message: String, tags: ReadableMap, reactTag: Int) {
-        convivaManager?.reportError(message, tags.toHashMap())
+        // Forcing onto UI thread to prevent race condition with init
+        UiThreadUtil.runOnUiThread {
+            convivaManager?.reportError(message, tags.toHashMap())
+                ?: run {
+                    Log.e(REACT_CLASS, "Missing convivaManager for reportError")
+                }
+        }
     }
 
     @ReactMethod
