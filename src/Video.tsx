@@ -340,7 +340,7 @@ const Video = forwardRef<VideoRef, ReactVideoProps>(
         ios: reportPlaybackEndedFunction,
         android: reportPlaybackEndedFunction,
         default: () => {
-          // TODO: Implement VideoManager.reportError for windows
+          // TODO: Implement VideoManager.reportPlaybackEnded for windows
           // nativeRef.current?.setNativeProps({seek: time});
         },
       })();
@@ -620,8 +620,10 @@ const Video = forwardRef<VideoRef, ReactVideoProps>(
         convivaInit,
         reportPlaybackRequested,
         setPlaybackData,
+        reportWarning,
         reportError,
-	    	seek,
+        reportPlaybackEnded,
+        seek,
         presentFullscreenPlayer,
         dismissFullscreenPlayer,
         save,
@@ -633,7 +635,9 @@ const Video = forwardRef<VideoRef, ReactVideoProps>(
         convivaInit,
         reportPlaybackRequested,
         setPlaybackData,
+        reportWarning,
         reportError,
+        reportPlaybackEnded,
         seek,
         presentFullscreenPlayer,
         dismissFullscreenPlayer,

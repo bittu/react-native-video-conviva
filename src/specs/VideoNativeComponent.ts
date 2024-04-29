@@ -372,9 +372,16 @@ export interface VideoManagerType {
     tags: object,
     reactTag: number
   ) => Promise<void>;
+  reportWarning: (
+    message: string,
+    reactTag: number
+  ) => Promise<void>;
   reportError: (
     message: string,
     tags: object,
+    reactTag: number
+  ) => Promise<void>;
+  reportPlaybackEnded: (
     reactTag: number
   ) => Promise<void>;
   save: (option: object, reactTag: number) => Promise<VideoSaveData>;
