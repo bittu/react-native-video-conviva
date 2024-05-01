@@ -199,13 +199,14 @@ const Video = forwardRef<VideoRef, ReactVideoProps>(
       if (!selectedTextTrack) {
         return;
       }
-      const value = selectedTextTrack.value
-        ? `${selectedTextTrack.value}`
-        : undefined;
-
+      const type = typeof selectedTextTrack.value;
+      if (type !== 'number' && type !== 'string') {
+        console.log('invalid type provided to selectedTextTrack');
+        return;
+      }
       return {
         type: selectedTextTrack?.type,
-        value,
+        value: `${selectedTextTrack.value}`,
       };
     }, [selectedTextTrack]);
 
@@ -213,13 +214,15 @@ const Video = forwardRef<VideoRef, ReactVideoProps>(
       if (!selectedAudioTrack) {
         return;
       }
-      const value = selectedAudioTrack.value
-        ? `${selectedAudioTrack.value}`
-        : undefined;
+      const type = typeof selectedAudioTrack.value;
+      if (type !== 'number' && type !== 'string') {
+        console.log('invalid type provided to selectedAudioTrack');
+        return;
+      }
 
       return {
         type: selectedAudioTrack?.type,
-        value,
+        value: `${selectedAudioTrack.value}`,
       };
     }, [selectedAudioTrack]);
 
