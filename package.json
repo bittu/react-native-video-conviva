@@ -7,10 +7,10 @@
     "react-native": "src/index",
     "license": "MIT",
     "author": "Community Contributors",
-    "homepage": "https://github.com/react-native-video/react-native-video#readme",
+    "homepage": "https://github.com/EETVApps/react-native-video-conviva#readme",
     "repository": {
         "type": "git",
-        "url": "git@github.com:darrentaft/react-native-video-conviva.git"
+        "url": "git@github.com:EETVApps/react-native-video-conviva.git"
     },
     "resolutions": {
         "@types/react": "~18.0.0"
