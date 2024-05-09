@@ -71,6 +71,7 @@ interface StateType {
   showRNVControls: boolean;
   useCache: boolean;
   poster?: string;
+  showNotificationControls: boolean;
 }
 
 class VideoPlayer extends Component {
@@ -100,9 +101,13 @@ class VideoPlayer extends Component {
     showRNVControls: false,
     useCache: false,
     poster: undefined,
+    showNotificationControls: false,
   };
 
   seekerWidth = 0;
+
+  // internal usage change to index if you want to select tracks by index instead of lang
+  textTracksSelectionBy = 'lang';
 
   srcAllPlatformList = [
     {
@@ -112,10 +117,24 @@ class VideoPlayer extends Component {
     {
       description: 'local file portrait',
       uri: require('./portrait.mp4'),
+      metadata: {
+        title: 'Test Title',
+        subtitle: 'Test Subtitle',
+        artist: 'Test Artist',
+        description: 'Test Description',
+        imageUri: 'https://pbs.twimg.com/profile_images/1498641868397191170/6qW2XkuI_400x400.png'
+      }
     },
     {
       description: '(hls|live) red bull tv',
       uri: 'https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master_928.m3u8',
+      metadata: {
+        title: 'Custom Title',
+        subtitle: 'Custom Subtitle',
+        artist: 'Custom Artist',
+        description: 'Custom Description',
+        imageUri: 'https://pbs.twimg.com/profile_images/1498641868397191170/6qW2XkuI_400x400.png'
+      }
     },
     {
       description: 'invalid URL',
@@ -166,6 +185,10 @@ class VideoPlayer extends Component {
     {
       description: 'Another live sample',
       uri: 'https://live.forstreet.cl/live/livestream.m3u8',
+    },
+    {
+      description: 'asset file',
+      uri: 'asset:///broadchurch.mp4',
     },
     {
       description: '(dash) sintel subtitles',
@@ -300,7 +323,10 @@ class VideoPlayer extends Component {
     if (selectedTrack?.language) {
       this.setState({
         textTracks: data.textTracks,
-        selectedTextTrack: {
+        selectedTextTrack: this.textTracksSelectionBy === 'index' ? {
+          type: 'index',
+          value: selectedTrack?.index,
+        }: {
           type: 'language',
           value: selectedTrack?.language,
         },
@@ -398,6 +424,12 @@ class VideoPlayer extends Component {
     } else {
       this.video?.presentFullscreenPlayer();
     }
+  }
+
+  toggleShowNotificationControls() {
+    this.setState({
+      showNotificationControls: !this.state.showNotificationControls,
+    });
   }
 
   goToChannel(channel: number) {
@@ -719,6 +751,14 @@ class VideoPlayer extends Component {
                   selectedText="poster"
                   unselectedText="no poster"
                 />
+                <ToggleControl
+                  isSelected={this.state.showNotificationControls}
+                  onPress={() => {
+                    this.toggleShowNotificationControls();
+                  }}
+                  selectedText="hide notification controls"
+                  unselectedText="show notification controls"
+                />
               </View>
               <View style={styles.generalControls}>
                 {/* shall be replaced by slider */}
@@ -804,7 +844,7 @@ class VideoPlayer extends Component {
                       console.log('on value change ' + itemValue);
                       this.setState({
                         selectedTextTrack: {
-                          type: 'language',
+                          type: this.textTracksSelectionBy === 'index' ? 'index': 'language',
                           value: itemValue,
                         },
                       });
@@ -814,13 +854,21 @@ class VideoPlayer extends Component {
                       if (!track) {
                         return;
                       }
-                      return (
-                        <Picker.Item
-                          label={track.language}
-                          value={track.language}
-                          key={track.language}
-                        />
-                      );
+                      if (this.textTracksSelectionBy === 'index') {
+                        return (
+                          <Picker.Item
+                            label={`${track.index}`}
+                            value={track.index}
+                            key={track.index}
+                          />);
+                      } else {
+                        return (
+                          <Picker.Item
+                            label={track.language}
+                            value={track.language}
+                            key={track.language}
+                          />);
+                      }
                     })}
                   </Picker>
                 )}
@@ -840,6 +888,7 @@ class VideoPlayer extends Component {
     return (
       <TouchableOpacity style={viewStyle}>
         <Video
+          showNotificationControls={this.state.showNotificationControls}
           ref={(ref: VideoRef) => {
             this.video = ref;
           }}

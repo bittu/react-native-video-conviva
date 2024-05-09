@@ -16,9 +16,7 @@ import kotlin.math.roundToInt
 class VideoManagerModule(reactContext: ReactApplicationContext?) : ReactContextBaseJavaModule(reactContext) {
     private var convivaManager: ConvivaManager? = null
 
-    override fun getName(): String {
-        return REACT_CLASS
-    }
+    override fun getName(): String = REACT_CLASS
 
     private fun performOnPlayerView(reactTag: Int, callback: (ReactExoplayerView?) -> Unit) {
         UiThreadUtil.runOnUiThread {
