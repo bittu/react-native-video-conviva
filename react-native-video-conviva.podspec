@@ -5,15 +5,15 @@ package = JSON.parse(File.read(File.join(__dir__, "package.json")))
 folly_compiler_flags = '-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32'
 
 Pod::Spec.new do |s|
-  s.name           = 'react-native-video'
+  s.name           = 'react-native-video-conviva'
   s.version        = package['version']
   s.summary        = package['description']
   s.description    = package['description']
   s.license        = package['license']
   s.author         = package['author']
 
-  s.homepage       = 'https://github.com/TheWidlarzGroup/react-native-video'
-  s.source         = { :git => "https://github.com/TheWidlarzGroup/react-native-video.git", :tag => "v#{s.version}" }
+  s.homepage       = 'https://github.com/bittu/react-native-video-conviva'
+  s.source         = { :git => "https://github.com/bittu/react-native-video-conviva.git", :tag => "v#{s.version}" }
   s.platforms      = { :ios => "13.0", :tvos => "13.0", :visionos => "1.0" }
 
   s.subspec "Video" do |ss|
