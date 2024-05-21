@@ -57,7 +57,7 @@
         "windows",
         "src",
         "lib",
-        "react-native-video.podspec",
+        "react-native-video-conviva.podspec",
         "!android/build",
         "!android/buildOutput_*",
         "!android/local.properties",
